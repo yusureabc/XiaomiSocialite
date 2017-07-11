@@ -124,9 +124,4 @@ class Provider extends AbstractProvider implements ProviderInterface
 
         return $this->credentialsResponseBody;
     }
-
-    public static function additionalConfigKeys()
-    {
-        // return ['auth_base_uri'];
-    }
 }
