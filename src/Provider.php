@@ -1,6 +1,6 @@
 <?php
 
-namespace yusureabc\XiaomiSocialite;
+namespace Yusureabc\XiaomiSocialite;
 
 use Laravel\Socialite\Two\ProviderInterface;
 use SocialiteProviders\Manager\OAuth2\AbstractProvider;

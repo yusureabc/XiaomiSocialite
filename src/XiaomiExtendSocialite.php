@@ -1,6 +1,6 @@
 <?php
 
-namespace yusureabc\XiaomiSocialite;
+namespace Yusureabc\XiaomiSocialite;
 
 use SocialiteProviders\Manager\SocialiteWasCalled;
 
