@@ -13,25 +13,7 @@ class Provider extends AbstractProvider implements ProviderInterface
      */
     const IDENTIFIER = 'XIAOMI';
 
-    /**
-     * @var string
-     */
-    protected $openId;
 
-    /**
-     * {@inheritdoc}.
-     */
-    protected $scopes = ['snsapi_login'];
-
-    /**
-     * set Open Id.
-     *
-     * @param string $openId
-     */
-    public function setOpenId($openId)
-    {
-        $this->openId = $openId;
-    }
 
     /**
      * {@inheritdoc}.
@@ -43,12 +25,13 @@ class Provider extends AbstractProvider implements ProviderInterface
 
     /**
      * {@inheritdoc}.
+     * https://account.xiaomi.com/oauth2/authorize?client_id=2882303761517596640&response_type=code&redirect_uri=http%3A%2F%2Ftestthirdparty.yeelight.com%2FgetToken.php&state=state
      */
     protected function buildAuthUrlFromBase($url, $state)
     {
         $query = http_build_query($this->getCodeFields($state), '', '&', $this->encodingType);
 
-        return $url.'?'.$query.'#wechat_redirect';
+        return $url . '?' . $query . '&state=state';
     }
 
     /**
@@ -57,10 +40,10 @@ class Provider extends AbstractProvider implements ProviderInterface
     protected function getCodeFields($state = null)
     {
         return [
-            'appid' => $this->clientId, 'redirect_uri' => $this->redirectUrl,
+            'client_id'     => $this->clientId,
             'response_type' => 'code',
-            'scope' => $this->formatScopes($this->scopes, $this->scopeSeparator),
-            'state' => $state,
+            'redirect_uri'  => $this->redirectUrl,
+            'state'         => 'state',
         ];
     }
 
