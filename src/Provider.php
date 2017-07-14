@@ -31,7 +31,7 @@ class Provider extends AbstractProvider implements ProviderInterface
     {
         $query = http_build_query($this->getCodeFields($state), '', '&', $this->encodingType);
 
-        return $url . '?' . $query . '&state=state';
+        return $url . '?' . $query;
     }
 
     /**
