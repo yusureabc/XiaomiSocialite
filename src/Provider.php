@@ -43,7 +43,7 @@ class Provider extends AbstractProvider implements ProviderInterface
             'client_id'     => $this->clientId,
             'response_type' => 'code',
             'redirect_uri'  => $this->redirectUrl,
-            'state'         => 'state',
+            'state'         => $state,
         ];
     }
 
@@ -62,9 +62,8 @@ class Provider extends AbstractProvider implements ProviderInterface
     {
         $response = $this->getHttpClient()->get('https://open.account.xiaomi.com/user/profile', [
             'query' => [
-                'access_token' => $token,
-                'openid' => $this->openId,
-                'lang' => 'zh_CN',
+                'clientId' => $this->clientId,
+                'token'    => $token,
             ],
         ]);
 
@@ -77,8 +76,9 @@ class Provider extends AbstractProvider implements ProviderInterface
     protected function mapUserToObject(array $user)
     {
         return (new User())->setRaw($user)->map([
-            'id' => $user['openid'], 'nickname' => $user['miliaoNick'],
-            'avatar' => $user['miliaoIcon'], 'name' => null, 'email' => null,
+            'id'       => $user['userId'],
+            'nickname' => $user['miliaoNick'],
+            'avatar'   => $user['miliaoIcon'],
         ]);
     }
 
@@ -88,8 +88,12 @@ class Provider extends AbstractProvider implements ProviderInterface
     protected function getTokenFields($code)
     {
         return [
-            'appid' => $this->clientId, 'secret' => $this->clientSecret,
-            'code' => $code, 'grant_type' => 'authorization_code',
+            'grant_type'    => 'authorization_code',
+            'code'          => $code,
+            'client_id'     => $this->clientId,
+            'client_secret' => $this->clientSecret,
+            'redirect_uri'  => $this->redirectUrl,
+            'token_type'    => 'mac',
         ];
     }
 
