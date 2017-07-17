@@ -49,29 +49,34 @@ class Provider extends AbstractProvider implements ProviderInterface
 
     /**
      * {@inheritdoc}.
+     * @see \Laravel\Socialite\Two\AbstractProvider::getTokenUrl()
      */
     protected function getTokenUrl()
     {
-        return 'https://account.xiaomi.com/oauth2/token?token_type=bearer';
+        return 'https://account.xiaomi.com/oauth2/token';
     }
 
     /**
      * {@inheritdoc}.
+     * @see \Laravel\Socialite\Two\AbstractProvider::getUserByToken()
      */
     protected function getUserByToken($token)
     {
+
         $response = $this->getHttpClient()->get('https://open.account.xiaomi.com/user/profile', [
             'query' => [
                 'clientId' => $this->clientId,
                 'token'    => $token,
             ],
         ]);
-
-        return json_decode($response->getBody(), true);
+    
+        $contents = json_decode($response->getBody()->getContents(), true);
+        return $contents['data'];
     }
 
     /**
      * {@inheritdoc}.
+     * @see \Laravel\Socialite\Two\AbstractProvider::mapUserToObject()
      */
     protected function mapUserToObject(array $user)
     {
@@ -84,6 +89,7 @@ class Provider extends AbstractProvider implements ProviderInterface
 
     /**
      * {@inheritdoc}.
+     * @see \Laravel\Socialite\Two\AbstractProvider::getTokenFields()
      */
     protected function getTokenFields($code)
     {
@@ -106,8 +112,11 @@ class Provider extends AbstractProvider implements ProviderInterface
             'query' => $this->getTokenFields($code),
         ]);
 
-        $this->credentialsResponseBody = json_decode($response->getBody(), true);
-        $this->openId = $this->credentialsResponseBody['openid'];
+        $contents = str_replace("&&&START&&&","", $response->getBody()->getContents() );
+        
+        $this->credentialsResponseBody = json_decode( $contents, true );
+
+        $this->openId = $this->credentialsResponseBody['openId'];
 
         return $this->credentialsResponseBody;
     }
